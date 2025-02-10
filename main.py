@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 # Define initial parameters
-# Initial A, B, P, POPSHIFT, variances, tmax
+# Initial A, B, P, variances, tmax
 #IMPORTANT: 
     #I added POPSHIFT = a walking variable that determines 
     #how much of a virus's population will shift to the new variant 
@@ -15,7 +15,7 @@ import pandas as pd
 
 
 vir = [ #virus parameters
-    [0.3,0.2,0.1,0.2] #init virus has (A,B,P,POPSHIFT) = (0.3,0.2,0.1,0.2)
+    [0.3,0.2,0.1] #init virus has (A,B,P) = (0.3,0.2,0.1)
 ]
 #variances = ?
 tmax = 300
