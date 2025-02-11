@@ -15,59 +15,93 @@ for all viruses (vir(n)):
         IMPORTANT: we must figure how to do this in a way that is NOT just a hardcode
 '''
 
-def discreteMutation(virP, virV, y, t):
+'discreteMutation - iterates over current I and uses probability to simulate probabilistic mutations'
+def discreteMutation(virP, virV, Inew, t):
 
-    nV = y.shape[1]-2
+    nV = len(Inew) # number of Variants = length of I 
     pM = np.random.rand(nV)
+
+    vbeta      = virV[0]
+    vgamma     = virV[1]
+    vpMutation = virV[2]
     
-    # loop over all I
+    newMutations = 0
+    newVariants  = []
+
+    # loop over all variants
     for i in range(0, nV):
-        # run classical probability
-        if pM[i] <= virP[i-1][2]:
 
-            mutationIndex = len(y[1]) - 2
+        # Simulate mutation each time probability is met
+        pMutation = virP[i][2]
+        if pM[i] <= pMutation:         
 
-            print(f'Timestep {t}: variant {i} has mutated to variant {mutationIndex}.')
+            # population transfer
+            nMutation = pMutation * Inew[i]
+            Inew[i] -= nMutation
 
-            # UPON CREATION OF NEW VIRUS: create new parameters virP
-                # modify current virP based off of virus
-                # add new virP to existing matrix
+            newVariants.append(nMutation) # add to newVariants
 
-            # create new I at y[t][i-2]
+            # carry new parameters in virP (TODO: APPLY VARIANCE TO PARAMETERS)
+            prevP = virP[i]
+            # apply variances using normal distribution
+            newvirP = [np.random.normal(virP[i][j], (virV[j]**0.5)) for j in range(len(virP[0]))] 
+
+            # ensure 
+            for j in range(len(newvirP)):
+                if newvirP[j] < 0:
+                    newvirP[j] = 0
+        
+            virP.append(newvirP) # append new parameters 
+            
+            newMutationIndex = len(virP) - 1  # access index for printing
+            print(f'Timestep {t}: variant {i} has mutated to variant {newMutationIndex}.\n prevP = {prevP}\n newvirP = {newvirP}')
+
+        # print(f'Timestep {t}: total Mutations: {nV + newMutations + 1}')
+    Inew.extend(newVariants)
         
 
-
-
+# Built off SIR model ODE solver
 def odeMutations(virP, virV, tmax, ystart):
 
-    # simple SIR model ODE solver
     y = [ystart]
 
-    for t in range(tmax):
-        
-        # Run mutation before integrating
-        # discreteMutation(virP,virV,y,t)   
+    for t in range(0, tmax):
+
+        # Run mutation before integrating 
 
         # S,I,R values and parameters
-        # S and R stay as individual values
         # I is instead compartmentalized into an array where p(Variant v) = I[v]
         S = y[t][0]
-        I = y[t][1]
+        I = y[t][1].copy()
         R = y[t][2]   
 
-        # iterate over each disease
+        # Initialize accumulators for the changes
+        delta_S = 0
+        delta_I = [0] * len(I)  # one delta for each variant
+        delta_R = 0
+
+        # Compute the change for each variant based on the original S
         for v in range(len(I)):
 
-            # I[v]= y[t][v]
+            beta = virP[v][0]  # transmission v
+            gamma = virP[v][1]  # recovery v
+            pMutation = virP[v][2]  # mutation probability v 
 
-            beta = virP[v][0] # transmission
-            gamma = virP[v][1] # recovery
-            pMutation = virP[v][2] # mutation probab ility 
+            dS = - beta * S * I[v]
+            dI = (beta * S * I[v]) - (gamma * I[v])
+            dR = gamma * I[v]
 
-            S += - beta * S * I[v]
-            I[v] += (beta * S * I[v]) - (gamma * I[v])
-            R += gamma * I[v]
+            delta_S += dS
+            delta_I[v] = dI
+            delta_R += dR
             
-        y.append([S,I,R])
+        # Update the state after all variant contributions are computed
+        Snew = S + delta_S
+        Inew = [I[v] + delta_I[v] for v in range(len(I))]
+        Rnew = R + delta_R
+
+        # apply mutation after iterating
+        discreteMutation(virP,virV,Inew,t) 
+        y.append([Snew, Inew, Rnew])
 
     return y
