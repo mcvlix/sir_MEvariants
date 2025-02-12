@@ -31,14 +31,15 @@ def discreteMutation(virP, virV, Inew, t):
     # loop over all variants
     numCreatedThisRound = 0
     for i in range(0, nV):
-        if numCreatedThisRound >= 10:
+        if numCreatedThisRound >= 10: #we get so stressed if there's more than an absurd amount of mutations made
             break
         # Simulate mutation each time probability is met
         pMutation = virP[i][2]
         if pM[i] <= pMutation:         
             numCreatedThisRound += 1
             # population transfer
-            nMutation = pMutation * Inew[i]
+            #print(virP[i][1]
+            nMutation = virP[i][1] * Inew[i]
             Inew[i] -= nMutation
 
             newVariants.append(nMutation) # add to newVariants
