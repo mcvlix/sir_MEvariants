@@ -41,6 +41,7 @@ def plotMutations(y):
 
     plt.legend()
     plt.show(block=True)
+    plt.savefig('sample_SIR_graph.png')
 
 def plotAvgBetaAndGamma(avgBetaOnTime, avgGammaOnTime):
 

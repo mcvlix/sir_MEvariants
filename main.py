@@ -124,5 +124,6 @@ fig1.savefig("expected_alpha_beta_ratio.png")
 
 
 #plot a sample SIR graph (namely the last set of ICs)
+fig2 = plt.figure(figsize=(10, 6))
 plotMutations(y)
-plt.savefig("sample_SIR_graph.png")
+plt.savefig('sample_SIR_graph.png')
