@@ -1,4 +1,19 @@
-# main.py
+
+# ================================================
+# WHAT THE FIGURE SHOWS
+
+# the figure shows the expected values of alpha (avgBetaOnTime) and beta (avgGammaOnTime) 
+# (yes i know we used alpha and beta in one set and beta gamma in the other.)
+# over 50 iterations of the simulation, along with the ratio of alpha to beta at each timestep.
+# the expected values are computed by averaging the results from all 50 iterations, 
+# and the ratio is calculated by dividing the expected α by the expected β at each timestep. 
+# the plot provides insights into how these parameters evolve over time and their relative relationship.
+# the fact that the ratio remains constant / slowly decreases forever after a point suggests that 
+# we have successfully found a variation pattern that tends towards infectivity rather than lethality.
+
+# ================================================
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -98,3 +113,4 @@ plt.title("Expected α, β, and (α/β) Over 50 Iterations")
 plt.legend()
 plt.grid(True)
 plt.show()
+plt.savefig("expected_alpha_beta_ratio.png")
