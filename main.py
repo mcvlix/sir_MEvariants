@@ -1,6 +1,6 @@
 
 # ================================================
-# WHAT THE FIGURE SHOWS
+# WHAT THE FIRST FIGURE SHOWS
 
 # the figure shows the expected values of alpha (avgBetaOnTime) and beta (avgGammaOnTime) 
 # (yes i know we used alpha and beta in one set and beta gamma in the other.)
@@ -10,6 +10,17 @@
 # the plot provides insights into how these parameters evolve over time and their relative relationship.
 # the fact that the ratio remains constant / slowly decreases forever after a point suggests that 
 # we have successfully found a variation pattern that tends towards infectivity rather than lethality.
+
+# ================================================
+#WHAT THE SECOND FIGURE SHOWS
+
+# the second figure shows a sample SIR graph for the last set of initial conditions passed to the simulation.
+# it displays the populations of susceptible, infected, and recovered individuals over time.
+# there are separate curves for each variant of the infected population,
+# illustrating how the infection spreads and evolves over time.
+# our current model shows that the first variant is dominant,
+# which we would like to fix in the future. This is likely due to our prolific assumptions
+# rather than the 'true' behavior of the virus.
 
 # ================================================
 
@@ -76,10 +87,6 @@ for i, ic in enumerate(ics):
     # run the simulation
     y, avgBetaOnTime, avgGammaOnTime = odeMutations(*odeparams)
     
-    # uncomment below if you want to plot the population curves first
-    # plotMutations(y)
-    # plotAvgBetaAndGamma(avgBetaOnTime, avgGammaOnTime)
-    
     # convert the returned time-series to NumPy arrays (for averaging)
     allAlpha.append(np.array(avgBetaOnTime, dtype=float))
     allBeta.append(np.array(avgGammaOnTime, dtype=float))
@@ -103,7 +110,7 @@ expected_beta  = np.mean(aligned_beta, axis=0)
 expected_ratio = expected_alpha / expected_beta
 
 # STEP 4: plot the expected curves and ratio
-plt.figure(figsize=(10, 6))
+fig1 = plt.figure(figsize=(10, 6))
 plt.plot(expected_alpha, label="Expected α (avgBetaOnTime)", linewidth=2)
 plt.plot(expected_beta, label="Expected β (avgGammaOnTime)", linewidth=2)
 plt.plot(expected_ratio, label="α / β", linewidth=2, linestyle="--")
@@ -113,4 +120,9 @@ plt.title("Expected α, β, and (α/β) Over 50 Iterations")
 plt.legend()
 plt.grid(True)
 plt.show()
-plt.savefig("expected_alpha_beta_ratio.png")
+fig1.savefig("expected_alpha_beta_ratio.png")
+
+
+#plot a sample SIR graph (namely the last set of ICs)
+plotMutations(y)
+plt.savefig("sample_SIR_graph.png")

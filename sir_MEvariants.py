@@ -57,7 +57,8 @@ def discreteMutation(virP, virV, Inew, t):
             virP.append(newvirP) # append new parameters 
             
             newMutationIndex = len(virP) - 1  # access index for printing
-            print(f'Timestep {t}: variant {i} has mutated to variant {newMutationIndex}.\n prevP = {prevP}\n newvirP = {newvirP}')
+            #uncomment below if you want to see all the mutations
+            #print(f'Timestep {t}: variant {i} has mutated to variant {newMutationIndex}.\n prevP = {prevP}\n newvirP = {newvirP}')
 
         # print(f'Timestep {t}: total Mutations: {nV + newMutations + 1}')
     Inew.extend(newVariants)
