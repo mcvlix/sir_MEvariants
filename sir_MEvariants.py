@@ -64,7 +64,9 @@ def discreteMutation(virP, virV, Inew, t):
 def odeMutations(virP, virV, tmax, ystart):
 
     y = [ystart]
-
+    averageBetaAcrossTime = []
+    averageGammaAcrossTime = []
+    timesWhereMutationsHappened = []
     for t in range(0, tmax):
 
         # Run mutation before integrating 
@@ -80,12 +82,19 @@ def odeMutations(virP, virV, tmax, ystart):
         delta_I = [0] * len(I)  # one delta for each variant
         delta_R = 0
 
+        betaAllForThisTime = []
+        gammaAllForThisTime = []
         # Compute the change for each variant based on the original S
+        
         for v in range(len(I)):
 
             beta = virP[v][0]  # transmission v
             gamma = virP[v][1]  # recovery v
             pMutation = virP[v][2]  # mutation probability v 
+
+            #here we append beta and gamma for variant v on our array for betaAll and gammaAll
+            betaAllForThisTime.append(beta)
+            gammaAllForThisTime.append(gamma)
 
             dS = - beta * S * I[v]
             dI = (beta * S * I[v]) - (gamma * I[v])
@@ -94,7 +103,14 @@ def odeMutations(virP, virV, tmax, ystart):
             delta_S += dS
             delta_I[v] = dI
             delta_R += dR
-            
+
+        #and here we calculate the average beta and gamma for this time step. check out the /sum(i) thing
+        #averageBetaForThisTime = sum(np.multiply(betaAllForThisTime, I)) / sum(I)
+        #averageGammaForThisTime = sum(np.multiply(gammaAllForThisTime, I)) / sum(I) these two are normalized for the population
+        averageBetaForThisTime = sum(betaAllForThisTime) / sum(I)
+        averageGammaForThisTime = sum(gammaAllForThisTime) / sum(I)
+
+
         # Update the state after all variant contributions are computed
         Snew = S + delta_S
         Inew = [I[v] + delta_I[v] for v in range(len(I))]
@@ -103,5 +119,8 @@ def odeMutations(virP, virV, tmax, ystart):
         # apply mutation after iterating
         discreteMutation(virP,virV,Inew,t) 
         y.append([Snew, Inew, Rnew])
+        averageBetaAcrossTime.append(averageBetaForThisTime)
+        averageGammaAcrossTime.append(averageGammaForThisTime)
 
-    return y
+    
+    return y, averageBetaAcrossTime, averageGammaAcrossTime

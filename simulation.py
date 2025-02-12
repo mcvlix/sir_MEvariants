@@ -41,3 +41,11 @@ def plotMutations(y):
 
     plt.legend()
     plt.show(block=True)
+
+def plotAvgBetaAndGamma(avgBetaOnTime, avgGammaOnTime):
+
+    plt.plot(avgBetaOnTime, label="Average of Beta, Unweighted For Population")
+    plt.plot(avgGammaOnTime, label="Average of Gamma, Unweighted For Population")
+    plt.plot(np.divide(avgBetaOnTime,avgGammaOnTime), label="Average of Beta/Gamma")
+    plt.legend()
+    plt.show(block=True)

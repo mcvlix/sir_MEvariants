@@ -3,7 +3,7 @@ import numpy as numpy
 
 
 from sir_MEvariants import odeMutations
-from simulation import plotMutations, prepareICs
+from simulation import plotMutations, prepareICs, plotAvgBetaAndGamma
 
 # Initial parameters
 # tMax                                - no. timesteps
@@ -15,20 +15,20 @@ from simulation import plotMutations, prepareICs
 # IMPORTANT: ENSURE Istart, betastart, gammastart, pMutationstart all same length
 # (each initial variant is parameterized)
 
-
+'''
 ic1 = {
 "string": "This set of ICs is a basic example of one non-recoverable initial variant with 0.02 mutation chances at each timestep.",
 "tMax":           100,
 "virV":          [0.005, 0.005, 0.0005],
 "Istart":        [0.01],
-"betastart":     [0.2],
-"gammastart":    [0.00],
+"betastart":     [0.3],
+"gammastart":    [0.1],
 "pMutationstart":[0.02],
 }
-
+'''
 ic2 = {
 "string": "This set of ICs is an example of three non-recoverable initial variants with differing mutation chances at each timestep: First is dominant w/ low mutation chances. Second and Third are much less dominant with high mutation chances.",
-"tMax":           100,
+"tMax":           200,
 "virV":          [0.005, 0.005, 0.0005],
 "Istart":        [0.02, 0.01, 0.01],
 "betastart":     [0.1, 0.2, 0.1],
@@ -36,7 +36,8 @@ ic2 = {
 "pMutationstart":[0.005,0.02, 0.02]
 }
 
-ics = [ic1, ic2]
+#ics = [ic1, ic2]
+ics = [ic2]
 
 for i in range(len(ics)):
 
@@ -45,7 +46,8 @@ for i in range(len(ics)):
     # clean parameters
     odeparams = prepareICs(ics[i], i)
     # run odeMutations
-    y = odeMutations(*odeparams)
+    y,avgBetaOnTime,avgGammaOnTime = odeMutations(*odeparams)
     # plot
     plotMutations(y)
+    plotAvgBetaAndGamma(avgBetaOnTime, avgGammaOnTime)
 
